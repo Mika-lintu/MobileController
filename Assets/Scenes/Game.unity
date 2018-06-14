@@ -366,7 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d071001c112bdd44bfee212015168d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1: {fileID: 837976716}
+  player1: {fileID: 1975681083}
   player2: {fileID: 837976716}
   newPort: 2310
 --- !u!4 &991714891
