@@ -1,12 +1,15 @@
 using System;
 using UnityEngine;
 
+
 namespace UnityStandardAssets.CrossPlatformInput
 {
     public class ButtonHandler : MonoBehaviour
     {
 
         public string Name;
+        public int buttonID;
+
 
         void OnEnable()
         {
@@ -16,6 +19,7 @@ namespace UnityStandardAssets.CrossPlatformInput
         public void SetDownState()
         {
             CrossPlatformInputManager.SetButtonDown(Name);
+            NetworkClientUI.SendButtonInfo(name, 1, buttonID);
             print("I was Clicked");
         }
 
@@ -23,7 +27,8 @@ namespace UnityStandardAssets.CrossPlatformInput
         public void SetUpState()
         {
             CrossPlatformInputManager.SetButtonUp(Name);
-            NetworkClientUI.SendButtonInfo(name);
+            NetworkClientUI.SendButtonInfo(name, 0, buttonID);
+            
             print("I was Released");
         }
 
