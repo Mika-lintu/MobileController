@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 using UnityStandardAssets.CrossPlatformInput;
-using UnityEngine;
+
 
 
 public class NetworkServerUI : MonoBehaviour {
@@ -17,10 +18,6 @@ public class NetworkServerUI : MonoBehaviour {
 
     //CrossPlatformInputManager.VirtualAxis virtualHAxisP3;
     //CrossPlatformInputManager.VirtualAxis virtualVAxisP3;
-
-
-    string horizontalAxisName = "Horizontal";
-    string verticalAxisName = "Vertical";
 
     CarInput player;
 
@@ -76,14 +73,14 @@ public class NetworkServerUI : MonoBehaviour {
         //CrossPlatformInputManager.RegisterVirtualAxis(virtualVAxisP3);
 
         NetworkServer.Listen(2310);
-        NetworkServer.RegisterHandler(111, RecieveMessage);
-        NetworkServer.RegisterHandler(222, RecieveMessage);
-        NetworkServer.RegisterHandler(333, RecieveMessage);
+        NetworkServer.RegisterHandler(111, PlayerOne);
+        NetworkServer.RegisterHandler(222, PlayerTwo);
+        //NetworkServer.RegisterHandler(333, RecieveMessage);
 
         NetworkServer.RegisterHandler(999, NewPlayer);
     }
 
-    private void RecieveMessage(NetworkMessage message)
+    /*private void RecieveMessage(NetworkMessage message)
     {
         short messageNum = message.msgType;
         int messageID;
@@ -94,10 +91,12 @@ public class NetworkServerUI : MonoBehaviour {
         {
             case 111:
                 player = player1;
+                print("Player One " + messageNum);
                 break;
 
             case 222:
                 player = player2;
+                print("Player Two " + messageNum);
                 break;
 
             case 333:
@@ -174,10 +173,11 @@ public class NetworkServerUI : MonoBehaviour {
                 }
         }
 
-    }
+    }*/
 
-	private void PlayerOne(NetworkMessage message)
+    private void PlayerOne(NetworkMessage message)
     {
+        
         int messageID;
         bool isPressed = false;
         int buttonID;
@@ -272,7 +272,6 @@ public class NetworkServerUI : MonoBehaviour {
             }
     }
 
-
     private void NewPlayer(NetworkMessage message)
     {
         /*
@@ -280,16 +279,17 @@ public class NetworkServerUI : MonoBehaviour {
          Give free message port to player
          Send information to client
          */
-         Network
+         //Network
     }
-    
 
+  
     void SendMessage()
     {
         StringMessage msg = new StringMessage();
         msg.value = "This is server, does client copy?";
         NetworkServer.SendToAll(MsgType.Highest + 1, msg);
         //NetworkServer.SendToClientOfPlayer(player3, MsgType.Highest + 1,msg);
+        //NetworkClient.allClients[1];
     }
     
 
