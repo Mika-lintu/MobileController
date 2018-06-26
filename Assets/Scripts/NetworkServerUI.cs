@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
+using UnityEngine.Networking.PlayerConnection;
 using UnityStandardAssets.CrossPlatformInput;
 
 
@@ -23,15 +24,10 @@ public class NetworkServerUI : MonoBehaviour {
 
     public CarInput player1;
     public CarInput player2;
-    //public GameObject player3;
 
-
-    List<string> players;
+    int playercount = 1;
 
     public string newPort;
-
-
-    public const short ClientMessageType = MsgType.Highest + 1;
 
     private void OnGUI()
     {
@@ -46,10 +42,26 @@ public class NetworkServerUI : MonoBehaviour {
             if (int.TryParse(newPort, out portNumber))
                 NetworkServer.Listen(portNumber);
         }
-        if (GUI.Button(new Rect(Screen.width - 110, Screen.height - 30, 100, 60), "SendMessage"))
+        if (GUI.Button(new Rect(Screen.width - 110, Screen.height - 50, 100, 60), "UpdateClient"))
         {
-           SendMessage();
+
+            //print(NetworkServer.connections[1]);
+            SendClient();
         }
+        if (GUI.Button(new Rect(Screen.width - 230, Screen.height - 50, 100, 60), "Plaa"))
+        {
+            for (int i = 0; i < NetworkServer.connections.Count; i++)
+            {
+                print(NetworkServer.connections[i]);
+            }
+
+        }
+        //if (NetworkServer.connections.Count <= 2)
+        //{
+        //    GUI.Box(new Rect(30, 75, 200, 50), "");
+        //    GUI.Label(new Rect(35, 80, 150, 20), "Joystick H: " + debugH);
+        //    GUI.Label(new Rect(35, 100, 150, 20), "Joystick V: " + debugV);
+        //}
     }
 
     void Start ()
@@ -80,6 +92,7 @@ public class NetworkServerUI : MonoBehaviour {
         NetworkServer.RegisterHandler(999, NewPlayer);
     }
 
+   
     /*private void RecieveMessage(NetworkMessage message)
     {
         short messageNum = message.msgType;
@@ -186,42 +199,43 @@ public class NetworkServerUI : MonoBehaviour {
         msg.value = message.ReadMessage<StringMessage>().value;
         string[] deltas = msg.value.Split('|');
         
+        
         if (int.TryParse(deltas[0], out messageID))
 
-            if (messageID == 1)
-            {
-                virtualHAxisP1.Update(Convert.ToSingle(deltas[1]));
-                virtualVAxisP1.Update(Convert.ToSingle(deltas[2]));
-                
+        if (messageID == 1)
+        {
+            virtualHAxisP1.Update(Convert.ToSingle(deltas[1]));
+            virtualVAxisP1.Update(Convert.ToSingle(deltas[2]));
             }
-            else if (messageID == 2)
+        else if (messageID == 2)
+        {
+            int theBool;
+            if (int.TryParse(deltas[2], out theBool))
+
+            if (theBool == 1)
             {
-                int temp;
-                if (int.TryParse(deltas[2], out temp))
-                    if (temp == 1)
-                    {
-                        isPressed = true;
-                    }
-                    else
-                    {
-                        isPressed = false;
-                    }
-
-                if (int.TryParse(deltas[3], out buttonID))
-
-                    switch (buttonID)
-                    {
-                        case 1:
-                            player1.Button1(isPressed);
-                            break;
-                        case 2:
-                            player1.Button2(isPressed);
-                            break;
-
-                        default:
-                            break;
-                    }
+                isPressed = true;
             }
+            else
+            {
+                isPressed = false;
+            }
+
+            if (int.TryParse(deltas[3], out buttonID))
+
+            switch (buttonID)
+            {
+                case 1:
+                    player1.Button1(isPressed);
+                    break;
+                case 2:
+                    player1.Button2(isPressed);
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 
     private void PlayerTwo(NetworkMessage message)
@@ -274,27 +288,40 @@ public class NetworkServerUI : MonoBehaviour {
 
     private void NewPlayer(NetworkMessage message)
     {
-        /*
-         Add player to list
-         Give free message port to player
-         Send information to client
-         */
-         //Network
+        print("I happen");
+                
+        switch (playercount)
+        {
+            case 0:
+                print("ups");
+                break;
+            case 1:
+                SendMessage(1);
+                break;
+            case 2:
+                SendMessage(2);
+                break;
+            default:
+                
+                break;
+        }
+        print(playercount);
+        playercount++;         
     }
 
-  
-    void SendMessage()
+    void SendMessage(int playerID)
     {
         StringMessage msg = new StringMessage();
-        msg.value = "This is server, does client copy?";
-        NetworkServer.SendToAll(MsgType.Highest + 1, msg);
-        //NetworkServer.SendToClientOfPlayer(player3, MsgType.Highest + 1,msg);
-        //NetworkClient.allClients[1];
+        msg.value = playerID + "";
+        NetworkServer.SendToClient(NetworkServer.connections[playerID].connectionId, 999, msg);
     }
-    
 
-    void Update ()
+    void SendClient()
     {
-		
-	}
+        StringMessage msg = new StringMessage();
+        msg.value = 1 + "";
+        NetworkServer.SendToAll(987, msg);
+        
+    }
+
 }

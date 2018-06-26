@@ -9,16 +9,22 @@ public class NetworkClientUI : MonoBehaviour {
     public string serverIP;
     public string portNumber;
     public GameObject testObject;
-    
+
+    static string ipaddress;
     static NetworkClient client;
 
     string serverMessage;
 
-    static short messageNumber;
+    static short messageNumber = 999;
+
+    static bool playerID = false;
+
+    static string printText;
+
 
     private void OnGUI()
     {
-        string ipaddress = Network.player.ipAddress;
+        ipaddress = Network.player.ipAddress;
         GUI.Box(new Rect(10, Screen.height - 50, 100, 50), ipaddress);
         GUI.Label(new Rect(20, Screen.height - 30, 100, 20), "Status: " + client.isConnected);
 
@@ -30,20 +36,18 @@ public class NetworkClientUI : MonoBehaviour {
         {
             serverIP = GUI.TextField(new Rect(Screen.width - 110, 10, 100, 20),serverIP,25);
             portNumber = GUI.TextField(new Rect(Screen.width - 110, 50, 100, 20), portNumber, 25);
-            
-            if (GUI.Button(new Rect(80, 10, 80, 50), "Player One"))
-            {
-                messageNumber = 111;
-            }
-         
-            if (GUI.Button(new Rect(170, 10, 80, 50), "Player Two"))
-            {
-                messageNumber = 222;
-            }
-
             if (GUI.Button(new Rect(10, 10, 60, 50), "Connect"))
             {
-                Connect();
+                Connect();                
+            }
+        }else if (client.isConnected)
+        {
+            if (!playerID)
+            {
+                if (GUI.Button(new Rect(10, 10, 60, 50), "Start"))
+                {
+                    FirstMessage();
+                }
             }
         }
         
@@ -53,6 +57,7 @@ public class NetworkClientUI : MonoBehaviour {
     {
         client = new NetworkClient();
         client.RegisterHandler(999, GetMessageID);
+        client.RegisterHandler(987, UpdateController);
     }
 
     void Connect()
@@ -64,7 +69,13 @@ public class NetworkClientUI : MonoBehaviour {
 
     static public void FirstMessage()
     {
-
+        if (client.isConnected)
+        {
+            StringMessage msg = new StringMessage();
+            msg.value = ipaddress;
+            client.Send(999, msg);
+            playerID = true;
+        }
     }
 
     static public void SendJoystickInfo(float hDelta, float vDelta)
@@ -93,8 +104,35 @@ public class NetworkClientUI : MonoBehaviour {
         msg.value = message.ReadMessage<StringMessage>().value;
         string[] deltas = msg.value.Split('|');
         serverMessage = deltas[0];
-    }
-    
-    
 
+        int temp;
+        if (int.TryParse(deltas[0], out temp))
+
+        switch (temp)
+        {
+            case 1:
+                messageNumber = 111;
+                break;
+            case 2:
+                messageNumber = 222;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void UpdateController(NetworkMessage message)
+    {
+        StringMessage msg = new StringMessage();
+        msg.value = message.ReadMessage<StringMessage>().value;
+        string[] deltas = msg.value.Split('|');
+
+        int temp;
+        if (int.TryParse(deltas[0], out temp)) { }
+        if(temp == 1)
+        {
+            testObject.SetActive(true);
+        }
+
+    }
 }
