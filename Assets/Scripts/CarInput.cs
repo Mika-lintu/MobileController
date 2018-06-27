@@ -11,23 +11,58 @@ public class CarInput: MonoBehaviour {
     public string axisNameV;
     public string axisNameH;
 
+    public Transform fireRight;
+    public Transform fireLeft;
+
+    private string shootMode = "short";
+
     void Update () {
-        
-            float translation = CrossPlatformInputManager.GetAxis(axisNameV) * speed;
-            float rotation = CrossPlatformInputManager.GetAxis(axisNameH) * rotationSpeed;
 
-            translation *= Time.deltaTime;
-            rotation *= Time.deltaTime;
-            transform.Translate(0, 0, translation);
-            transform.Rotate(0, rotation, 0);
- 
-	}
+        //float translation = CrossPlatformInputManager.GetAxis(axisNameV) * speed * Time.deltaTime;
+        //transform.Translate(0, 0, translation);
 
+        float rotation = CrossPlatformInputManager.GetAxis(axisNameH) * rotationSpeed;
+        rotation *= Time.deltaTime;
+
+        gameObject.GetComponent<Rigidbody>().velocity = transform.forward * speed;
+        transform.Rotate(0, rotation, 0);
+
+
+        // TEST
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Button1(true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Button2(true);
+        }
+
+        // switch shooting mode with S
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Button3(true);
+        }
+
+    }
+
+    // shoot left
     public void Button1(bool pressed)
     {
         if (pressed)
         {
             print("Button 1 was pressed");
+
+            if (shootMode == "short")
+            {
+                gameObject.GetComponent<PlayerShooting>().ShortRangeShoot(fireLeft);
+            }
+
+            else if (shootMode == "long")
+            {
+                gameObject.GetComponent<PlayerShooting>().LongRangeShoot(fireLeft);
+            }
         }
         else
         {
@@ -35,11 +70,22 @@ public class CarInput: MonoBehaviour {
         }
     }
 
+    // shoot right
     public void Button2(bool pressed)
     {
         if (pressed)
         {
             print("Button 2 was pressed");
+
+            if (shootMode == "short")
+            {
+                gameObject.GetComponent<PlayerShooting>().ShortRangeShoot(fireRight);
+            }
+            
+            else if (shootMode == "long")
+            {
+                gameObject.GetComponent<PlayerShooting>().LongRangeShoot(fireRight);
+            }
         }
         else
         {
@@ -47,11 +93,22 @@ public class CarInput: MonoBehaviour {
         }
     }
 
+    // swap weapons
     public void Button3(bool pressed)
     {
         if (pressed)
         {
             print("Button 3 was pressed");
+
+            if (shootMode == "short")
+            {
+                shootMode = "long";
+            }
+            else
+            {
+                shootMode = "short";
+            }
+
         }
         else
         {
@@ -70,5 +127,4 @@ public class CarInput: MonoBehaviour {
             print("Button 4 was released");
         }
     }
-
 }
