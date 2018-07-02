@@ -89,7 +89,14 @@ public class NetworkClientUI : MonoBehaviour {
 
     static public void SendButtonInfo(string name, int pressed, int buttonID)
     {
-       
+        if (pressed == 1 && buttonID == 3)
+        {
+            uIController.SwapWeapons(buttonID);
+        }
+        if (pressed == 1 && !uIController.cooldownActive && buttonID != 3)
+        {
+            uIController.ActivateCooldown(buttonID);
+        }
         if (client.isConnected)
         {
             if (pressed == 1 && buttonID == 3)

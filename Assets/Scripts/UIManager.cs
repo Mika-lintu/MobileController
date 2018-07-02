@@ -24,52 +24,14 @@ public class UIManager : MonoBehaviour {
         weaponText.text = "Short range";
     }
 	
-	// Update is called once per frame
+	
 	void Update () {
-
-      //  if (cooldownActive)
-      //  {
-      //      if (currentCooldown == cooldownSliderType.LongShot)
-      //      {
-      //          cooldownActive = DoCoolDown(3f,longShotCooldown);
-      //      }
-      //      else if (currentCooldown == cooldownSliderType.ShortShot)
-      //      {
-      //          cooldownActive = DoCoolDown(3f, shortShotCooldown);
-      //      }
-      //      else if (currentCooldown == cooldownSliderType.Mine)
-      //      {
-      //          cooldownActive = DoCoolDown(2f, mineCooldown);
-      //      }
-      //  }
-        if (Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            RemoveHealth(1);
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            ActivateCooldown(2);
-        }
-
+        
     }
 
     public void ActivateCooldown(int buttonID)
     {
-       // if(buttonID == 3)
-       // {
-       //     if (currentCooldown == cooldownSliderType.ShortShot)
-       //     {
-       //         currentCooldown = cooldownSliderType.LongShot;
-       //     }
-       //     else if (currentCooldown == cooldownSliderType.LongShot)
-       //     {
-       //         currentCooldown = cooldownSliderType.Mine;
-       //     }
-       //     else
-       //     {
-       //         currentCooldown = cooldownSliderType.ShortShot;
-       //     }
-       // }
+       
         if (buttonID == 1 || buttonID == 2)
         {
             
@@ -88,29 +50,7 @@ public class UIManager : MonoBehaviour {
                 mineCooldown.value = 0;
                 StartCoroutine(Cooldown(3f, mineCooldown));
             }
-            //StopAllCoroutines();
         }
-                //print("ACTIVATED");
-                //if (buttonID == 1)
-                //{
-                //    longShotCooldown.value = 0;
-                //    currentCooldown = cooldownSliderType.LongShot;
-                //    print("LongShot");
-                //    cooldownActive = true;
-                //}
-                //else if (buttonID == 2)
-                //{
-                //    shortShotCooldown.value = 0;
-                //    currentCooldown = cooldownSliderType.ShortShot;
-                //    print("ShortShot");
-                //    cooldownActive = true;
-                //}
-                //else if (buttonID == 3)
-                //{
-                //    cooldownActive = false;  
-                //    print("Minedrop");
-                //}
-                //cooldownActive = true;
     }
 
     public void SwapWeapons(int buttonID)
@@ -149,14 +89,7 @@ public class UIManager : MonoBehaviour {
 
     IEnumerator Cooldown(float cooldownTime, Slider coolDown)
     {
-        //while (coolDown.value <= cooldownTime)
-        //{
-        //    coolDown.value += Time.deltaTime;
-        //     yield return null;
-        //}
         cooldownActive = true;
-        float duration = 3f; // 3 seconds you can change this 
-                             //to whatever you want
         float normalizedTime = 0;
         while (normalizedTime <= cooldownTime)
         {
@@ -169,7 +102,6 @@ public class UIManager : MonoBehaviour {
 
     void Test()
     {
-        print("HEP");
         StopAllCoroutines();
         cooldownActive = false;
     }
