@@ -18,8 +18,12 @@ namespace UnityStandardAssets.CrossPlatformInput
 
         public void SetDownState()
         {
+            //If(!cooldown)
             CrossPlatformInputManager.SetButtonDown(Name);
             NetworkClientUI.SendButtonInfo(name, 1, buttonID);
+
+            
+            //Add Cooldown
             print("I was Clicked");
         }
 

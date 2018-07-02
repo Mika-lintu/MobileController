@@ -20,10 +20,10 @@ public class NetworkServerUI : MonoBehaviour {
     //CrossPlatformInputManager.VirtualAxis virtualHAxisP3;
     //CrossPlatformInputManager.VirtualAxis virtualVAxisP3;
 
-    CarInput player;
+    //PlayerInput player;
 
-    public CarInput player1;
-    public CarInput player2;
+    public PlayerInput player1;
+    public PlayerInput player2;
 
     int playercount = 1;
 
@@ -42,20 +42,20 @@ public class NetworkServerUI : MonoBehaviour {
             if (int.TryParse(newPort, out portNumber))
                 NetworkServer.Listen(portNumber);
         }
-        if (GUI.Button(new Rect(Screen.width - 110, Screen.height - 50, 100, 60), "UpdateClient"))
-        {
+        //if (GUI.Button(new Rect(Screen.width - 110, Screen.height - 50, 100, 60), "UpdateClient"))
+        //{
 
-            //print(NetworkServer.connections[1]);
-            SendClient();
-        }
-        if (GUI.Button(new Rect(Screen.width - 230, Screen.height - 50, 100, 60), "Plaa"))
-        {
-            for (int i = 0; i < NetworkServer.connections.Count; i++)
-            {
-                print(NetworkServer.connections[i]);
-            }
+        //    //print(NetworkServer.connections[1]);
+        //    SendClient();
+        //}
+        //if (GUI.Button(new Rect(Screen.width - 230, Screen.height - 50, 100, 60), "Plaa"))
+        //{
+        //    for (int i = 0; i < NetworkServer.connections.Count; i++)
+        //    {
+        //        print(NetworkServer.connections[i]);
+        //    }
 
-        }
+        //}
         //if (NetworkServer.connections.Count <= 2)
         //{
         //    GUI.Box(new Rect(30, 75, 200, 50), "");
@@ -91,103 +91,7 @@ public class NetworkServerUI : MonoBehaviour {
 
         NetworkServer.RegisterHandler(999, NewPlayer);
     }
-
-   
-    /*private void RecieveMessage(NetworkMessage message)
-    {
-        short messageNum = message.msgType;
-        int messageID;
-        bool isPressed = false;
-        int buttonID;
-
-        switch (messageNum)
-        {
-            case 111:
-                player = player1;
-                print("Player One " + messageNum);
-                break;
-
-            case 222:
-                player = player2;
-                print("Player Two " + messageNum);
-                break;
-
-            case 333:
-                print("No More Players");
-                break;
-
-            case 444:
-                print("No More Players");
-                break;
-
-            case 555:
-                print("No More Players");
-                break;
-
-            case 666:
-                print("No More Players");
-                break;
-
-            case 777:
-                print("No More Players");
-                break;
-
-            case 888:
-                print("No More Players");
-                break;
-
-            case 999:
-                print("No More Players");
-                break;
-
-            default:
-                break;
-        }
-
-        StringMessage msg = new StringMessage();
-        msg.value = message.ReadMessage<StringMessage>().value;
-        string[] deltas = msg.value.Split('|');
-
-        if (int.TryParse(deltas[0], out messageID)) { }
-
-        if (messageID == 1)
-        {
-            virtualHAxisP1.Update(Convert.ToSingle(deltas[1]));
-            virtualVAxisP1.Update(Convert.ToSingle(deltas[2]));
-
-        }
-        else if (messageID == 2)
-        {
-            int temp;
-            if (int.TryParse(deltas[2], out temp))
-                if (temp == 1)
-                {
-                    isPressed = true;
-                }
-                else
-                {
-                    isPressed = false;
-                }
-
-            if (int.TryParse(deltas[3], out buttonID))
-
-                switch (buttonID)
-                {
-                    case 1:
-                        player.Button1(isPressed);
-                        break;
-
-                    case 2:
-                        player.Button2(isPressed);
-                        break;
-
-                    default:
-                        break;
-                }
-        }
-
-    }*/
-
+    
     private void PlayerOne(NetworkMessage message)
     {
         
@@ -204,12 +108,15 @@ public class NetworkServerUI : MonoBehaviour {
 
         if (messageID == 1)
         {
-            virtualHAxisP1.Update(Convert.ToSingle(deltas[1]));
-            virtualVAxisP1.Update(Convert.ToSingle(deltas[2]));
-            }
+                // virtualHAxisP1.Update(Convert.ToSingle(deltas[1]));
+                // virtualVAxisP1.Update(Convert.ToSingle(deltas[2]));
+                player1.axisH = (Convert.ToSingle(deltas[1]));
+                player1.axisV = (Convert.ToSingle(deltas[2]));
+        }
         else if (messageID == 2)
         {
-            int theBool;
+             
+                int theBool;
             if (int.TryParse(deltas[2], out theBool))
 
             if (theBool == 1)
@@ -230,6 +137,9 @@ public class NetworkServerUI : MonoBehaviour {
                     break;
                 case 2:
                     player1.Button2(isPressed);
+                    break;
+                case 3:
+                    player1.Button3(isPressed);
                     break;
 
                 default:
@@ -253,12 +163,15 @@ public class NetworkServerUI : MonoBehaviour {
 
             if (messageID == 1)
             {
-                virtualHAxisP2.Update(Convert.ToSingle(deltas[1]));
-                virtualVAxisP2.Update(Convert.ToSingle(deltas[2]));
+                //virtualHAxisP2.Update(Convert.ToSingle(deltas[1]));
+                //virtualVAxisP2.Update(Convert.ToSingle(deltas[2]));
+                player2.axisH = (Convert.ToSingle(deltas[1]));
+                player2.axisV = (Convert.ToSingle(deltas[2]));
             }
             else if (messageID == 2)
             {
-                int temp;
+                
+                int temp; 
                 if (int.TryParse(deltas[2], out temp))
                     if (temp == 1)
                     {
@@ -279,7 +192,9 @@ public class NetworkServerUI : MonoBehaviour {
                     case 2:
                             player2.Button2(isPressed);
                         break;
-
+                    case 3:
+                            player2.Button3(isPressed);
+                        break;
                     default:
                         break;
                 }
@@ -296,10 +211,12 @@ public class NetworkServerUI : MonoBehaviour {
                 print("ups");
                 break;
             case 1:
-                SendMessage(1);
-                break;
+                SendMessage(1,0,1);
+                player1.playerID = 1;
+                break; 
             case 2:
-                SendMessage(2);
+                SendMessage(2,0,2);
+                player2.playerID = 2;
                 break;
             default:
                 
@@ -309,10 +226,10 @@ public class NetworkServerUI : MonoBehaviour {
         playercount++;         
     }
 
-    void SendMessage(int playerID)
+    public void SendMessage(int playerID, int msgID, int msgInfo)
     {
         StringMessage msg = new StringMessage();
-        msg.value = playerID + "";
+        msg.value = msgID + "|" + msgInfo;
         NetworkServer.SendToClient(NetworkServer.connections[playerID].connectionId, 999, msg);
     }
 

@@ -16,8 +16,13 @@ public class PlayerHealth : MonoBehaviour {
     public Sprite oneHP;
     public Sprite noHP;
 
+    GameManager manager;
+    PlayerInput input;
+
     private void Start()
     {
+        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        input = GetComponent<PlayerInput>();
         // get the ship's sprite renderer and set health
         spriteRenderer = gameObject.transform.GetChild(2).GetComponent<SpriteRenderer>();
         health = maxHealth;
@@ -27,6 +32,7 @@ public class PlayerHealth : MonoBehaviour {
     public void TakeDamage (string name, int damage)
     {
         health -= damage;
+        input.DebugHealthMessage(damage, true);
 
         if (health == 2)
         {
@@ -50,11 +56,11 @@ public class PlayerHealth : MonoBehaviour {
         // add a point to the player who destroyed ship
         if (name != playerName)
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().AddPoint(playerName);
+           manager.AddPoint(playerName);
         }       
 
         // disable shooting & movement
-        gameObject.GetComponent<CarInput>().enabled = false;
+        input.enabled = false;
         gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
 
         yield return new WaitForSeconds(deadSeconds);
@@ -67,6 +73,8 @@ public class PlayerHealth : MonoBehaviour {
 
         health = maxHealth;
         gameObject.GetComponent<BoxCollider>().enabled = true;
-        gameObject.GetComponent<CarInput>().enabled = true;
+
+        input.enabled = true;
+        input.DebugHealthMessage(maxHealth, false);
     }
 }

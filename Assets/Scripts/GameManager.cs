@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(waitOnBegin);
         foreach (GameObject i in GameObject.FindGameObjectsWithTag("Player"))
         {
-            i.GetComponent<CarInput>().enabled = true;
+            i.GetComponent<PlayerInput>().enabled = true;
             playersPoints.Add(i.name, 0);
         }
     }
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour {
     {
         foreach (string i in playersPoints.Keys)
         {
-            GameObject.Find(i).GetComponent<CarInput>().enabled = false;
+            GameObject.Find(i).GetComponent<PlayerInput>().enabled = false;
             GameObject.Find(i).GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
         yield return new WaitForSeconds(waitOnEnd);

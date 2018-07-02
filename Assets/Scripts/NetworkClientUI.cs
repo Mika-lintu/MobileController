@@ -6,21 +6,20 @@ using UnityEngine.Networking.NetworkSystem;
 
 
 public class NetworkClientUI : MonoBehaviour {
+
     public string serverIP;
     public string portNumber;
-    public GameObject testObject;
-
     static string ipaddress;
+    
     static NetworkClient client;
+    static UIManager uIController;
 
     string serverMessage;
 
     static short messageNumber = 999;
-
+    
     static bool playerID = false;
-
-    static string printText;
-
+    public GameObject testObject;
 
     private void OnGUI()
     {
@@ -30,8 +29,7 @@ public class NetworkClientUI : MonoBehaviour {
 
         GUI.Box(new Rect(150, Screen.height - 50, 100, 50), "Server message");
         GUI.Label(new Rect(150, Screen.height - 30, 300, 20), serverMessage);
-
-
+        
         if (!client.isConnected)
         {
             serverIP = GUI.TextField(new Rect(Screen.width - 110, 10, 100, 20),serverIP,25);
@@ -40,7 +38,8 @@ public class NetworkClientUI : MonoBehaviour {
             {
                 Connect();                
             }
-        }else if (client.isConnected)
+        }
+        else if (client.isConnected)
         {
             if (!playerID)
             {
@@ -50,13 +49,13 @@ public class NetworkClientUI : MonoBehaviour {
                 }
             }
         }
-        
     }
 
     void Start ()
     {
+        uIController = GetComponent<UIManager>();
         client = new NetworkClient();
-        client.RegisterHandler(999, GetMessageID);
+        client.RegisterHandler(999, GetMessageNumber);
         client.RegisterHandler(987, UpdateController);
     }
 
@@ -90,34 +89,58 @@ public class NetworkClientUI : MonoBehaviour {
 
     static public void SendButtonInfo(string name, int pressed, int buttonID)
     {
+       
         if (client.isConnected)
         {
+            if (pressed == 1 && buttonID == 3)
+            {
+                uIController.SwapWeapons(buttonID);
+            }
+            if (pressed == 1 && !uIController.cooldownActive && buttonID!=3)
+            {
+                uIController.ActivateCooldown(buttonID);
+            }
+            
             StringMessage msg = new StringMessage();
-            msg.value = 2 +"|"+ name + "|" + pressed + "|"+ buttonID;
+            msg.value = 2 + "|" + name + "|" + pressed + "|" + buttonID;
             client.Send(messageNumber, msg);
         }
     }
 
-    public void GetMessageID(NetworkMessage message)
+    public void GetMessageNumber(NetworkMessage message)
     {
+        int msgID;
+        int msgInfo;
+
         StringMessage msg = new StringMessage();
         msg.value = message.ReadMessage<StringMessage>().value;
         string[] deltas = msg.value.Split('|');
         serverMessage = deltas[0];
 
-        int temp;
-        if (int.TryParse(deltas[0], out temp))
-
-        switch (temp)
+        if (int.TryParse(deltas[0], out msgID)) { }
+        if (int.TryParse(deltas[1], out msgInfo)) { }
+            if (msgID == 0)
+            {
+                    switch (msgInfo)
+                    {
+                        case 1:
+                            messageNumber = 111;
+                            client.RegisterHandler(977, UpdateController);
+                            break;
+                        case 2:
+                            messageNumber = 222;
+                            break;
+                        default:
+                            break;
+                    }
+            }
+        else if(msgID == 1)
         {
-            case 1:
-                messageNumber = 111;
-                break;
-            case 2:
-                messageNumber = 222;
-                break;
-            default:
-                break;
+            uIController.RemoveHealth(msgInfo);
+        }
+        else if(msgID == 2)
+        {
+            uIController.ResetUI(msgInfo);
         }
     }
 
@@ -133,6 +156,28 @@ public class NetworkClientUI : MonoBehaviour {
         {
             testObject.SetActive(true);
         }
+    }
 
+    void UpdateControllerUI(NetworkMessage message)
+    {
+        int UIType;
+
+        StringMessage msg = new StringMessage();
+        msg.value = message.ReadMessage<StringMessage>().value;
+        string[] deltas = msg.value.Split('|');
+
+        if (int.TryParse(deltas[0], out UIType)) { }
+        if (UIType == 1)
+        {
+            testObject.SetActive(true);
+        }
+        else if (UIType == 2)
+        {
+
+        }
+        else if (UIType == 3)
+        {
+
+        }
     }
 }
