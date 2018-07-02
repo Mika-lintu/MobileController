@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ShellExpl : MonoBehaviour {
 
-    public float maxLifetime = 3f;
+    public float maxLifetime;
+    private string fromWhichPlayer;
 
 	void Start () {
         Destroy(gameObject, maxLifetime);
@@ -14,8 +15,18 @@ public class ShellExpl : MonoBehaviour {
     {
         if (other.GetComponent<PlayerHealth>() != null)
         {
-            other.GetComponent<PlayerHealth>().TakeDamage();
-        }     
-        Destroy(gameObject);
+            other.GetComponent<PlayerHealth>().TakeDamage(fromWhichPlayer, 1);
+            Destroy(gameObject);
+        }
+    }
+
+    public void SetShooter (string name)
+    {
+        fromWhichPlayer = name;
+    }
+
+    public void SetMaxLifetime (float sec)
+    {
+        maxLifetime = sec;
     }
 }

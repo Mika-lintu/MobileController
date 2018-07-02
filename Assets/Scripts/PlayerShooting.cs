@@ -4,30 +4,70 @@ using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour {
 
+    public int minesCount = 3;
+    public int shellCount = 3;
+
+    public Transform seamine;
+    private float mineOffset = 2.9f;
     public Rigidbody shell;
     public float shellVelocity = 30f;
 
+    private float lastShotShort = -3;
+    private float shortCooldown = 3f;
+    private float lastShotLong = -1;
+    private float longCooldown = 1f;
+    private float lastSeamine = -1.5f;
+    private float seamineCooldown = 1.5f;
 
+    // shoots from all cannons
     public void ShortRangeShoot (Transform side)
     {
-        // shoots from all cannons
-        foreach (Transform child in side.transform)
+        if (Time.time >= lastShotShort + shortCooldown && shellCount > 0)
         {
-            Shoot(child);
+            shellCount--;
+            foreach (Transform child in side.transform)
+            {
+                Shoot(child, 0.5f);
+            }
+            lastShotShort = Time.time;
         }
     }
 
-	public void LongRangeShoot (Transform side)
+    // shoots from middle cannon only
+    public void LongRangeShoot (Transform side)
     {   
-        // shoots from middle cannon only
-        Shoot(side.transform.GetChild(1));
+        if (Time.time >= lastShotLong + longCooldown)
+        {
+            Shoot(side.transform.GetChild(1), 3f);
+            lastShotLong = Time.time;
+        }      
     }
 
-    private void Shoot (Transform cannon)
+    public void Seamine ()
     {
+        if (Time.time >= lastSeamine + seamineCooldown && minesCount > 0)
+        {
+            minesCount--;
+            Transform mine = Instantiate(seamine, transform.position - transform.forward * mineOffset, transform.rotation);
+            mine.GetComponent<SeamineExpl>().SetAttacker(name);
+            lastSeamine = Time.time;
+        }       
+    }
+
+
+    private void Shoot (Transform cannon, float lifetime)
+    {
+        // set lifetime and launch shell
         Rigidbody shellInstance = Instantiate(shell, cannon.position, cannon.rotation) as Rigidbody;
+        ShellExpl shellScript = shellInstance.GetComponent<ShellExpl>();
+        shellScript.SetMaxLifetime(lifetime);
+        shellScript.enabled = true;
         shellInstance.AddForce(cannon.forward * shellVelocity, ForceMode.VelocityChange);
 
+        // keep track of the player who's shooting (for points)
+        shellInstance.GetComponent<ShellExpl>().SetShooter(gameObject.name);
+
+        // play effects
         Transform explObject = cannon.GetChild(0);
         Transform smokeObject = cannon.GetChild(1);
 
@@ -37,4 +77,6 @@ public class PlayerShooting : MonoBehaviour {
         expl.Play();
         smoke.Play();
     }
+
+
 }

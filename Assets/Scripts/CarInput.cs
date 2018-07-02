@@ -28,7 +28,7 @@ public class CarInput: MonoBehaviour {
         transform.Rotate(0, rotation, 0);
 
 
-        // TEST
+// TEST
         if (Input.GetKeyDown(KeyCode.A))
         {
             Button1(true);
@@ -44,7 +44,7 @@ public class CarInput: MonoBehaviour {
         {
             Button3(true);
         }
-
+//
     }
 
     // shoot left
@@ -62,6 +62,11 @@ public class CarInput: MonoBehaviour {
             else if (shootMode == "long")
             {
                 gameObject.GetComponent<PlayerShooting>().LongRangeShoot(fireLeft);
+            }
+            
+            else if (shootMode == "seamine")
+            {
+                gameObject.GetComponent<PlayerShooting>().Seamine();
             }
         }
         else
@@ -86,6 +91,11 @@ public class CarInput: MonoBehaviour {
             {
                 gameObject.GetComponent<PlayerShooting>().LongRangeShoot(fireRight);
             }
+
+            else if (shootMode == "seamine")
+            {
+                gameObject.GetComponent<PlayerShooting>().Seamine();
+            }
         }
         else
         {
@@ -104,11 +114,14 @@ public class CarInput: MonoBehaviour {
             {
                 shootMode = "long";
             }
+            else if (shootMode == "long")
+            {
+                shootMode = "seamine";
+            }
             else
             {
                 shootMode = "short";
             }
-
         }
         else
         {
