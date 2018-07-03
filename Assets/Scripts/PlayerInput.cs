@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class PlayerInput: MonoBehaviour {
+public class PlayerInput: MonoBehaviour
+{
 
     public int playerID;
     
@@ -22,7 +23,15 @@ public class PlayerInput: MonoBehaviour {
     public NetworkServerUI server;
     private string shootMode = "short";
 
-    void Update () {
+    GameManager manager;
+
+    private void Start()
+    {
+        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
+
+    void Update ()
+    {
 
         //float translation = CrossPlatformInputManager.GetAxis(axisNameV) * speed * Time.deltaTime;
         //transform.Translate(0, 0, translation);
@@ -52,6 +61,7 @@ public class PlayerInput: MonoBehaviour {
         {
             Button3(true);
         }
+       
 //
     }
 
@@ -159,5 +169,34 @@ public class PlayerInput: MonoBehaviour {
         {
             server.SendMessage(playerID, 2, dmg);
         }
+    }
+
+    public void DebugAmmoMessage(int amount, bool remove)
+    {
+        if (remove)
+        {
+            server.SendMessage(playerID, 3, amount);
+        }
+        else if (!remove)
+        {
+            server.SendMessage(playerID, 4, amount);
+        }
+    }
+
+    public void DebugMineMessage(int amount, bool remove)
+    {
+        if (remove)
+        {
+            server.SendMessage(playerID, 5, amount);
+        }
+        else if (!remove)
+        {
+            server.SendMessage(playerID, 6, amount);
+        }
+    }
+
+    public void DebugTesti(int amount)
+    {
+        server.SendMessage(playerID, 7, amount);
     }
 }

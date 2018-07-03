@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
  *  
  */
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
     private Dictionary<string, int> playersPoints = new Dictionary<string, int>();
     public Text pointsDisplay;
@@ -23,16 +24,22 @@ public class GameManager : MonoBehaviour {
     public Transform[] ammoSpawnPoints;
 
     void Start () {
-        StartCoroutine(GameLoop());
-	}
+        //StartCoroutine(GameLoop());
+    }
 
     //----------------------------------------------------------
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            AddPoint("PlayerOne");
+            //StartCoroutine(GameLoop());
+            //AddPoint("PlayerOne");
         }
+    }
+
+    public void StartGame()
+    {
+        StartCoroutine(GameLoop());
     }
 
     private IEnumerator GameLoop()

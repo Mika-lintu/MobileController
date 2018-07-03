@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerShooting : MonoBehaviour {
+public class PlayerShooting : MonoBehaviour
+{
 
     public int minesCount = 3;
     public int shellCount = 3;
@@ -19,12 +20,20 @@ public class PlayerShooting : MonoBehaviour {
     private float lastSeamine = -1.5f;
     private float seamineCooldown = 1.5f;
 
+    PlayerInput playerInput;
+
+
+    private void Start()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
     // shoots from all cannons
     public void ShortRangeShoot (Transform side)
     {
         if (Time.time >= lastShotShort + shortCooldown && shellCount > 0)
         {
             shellCount--;
+            playerInput.DebugAmmoMessage(1, true);
             foreach (Transform child in side.transform)
             {
                 Shoot(child, 0.5f);
@@ -48,6 +57,7 @@ public class PlayerShooting : MonoBehaviour {
         if (Time.time >= lastSeamine + seamineCooldown && minesCount > 0)
         {
             minesCount--;
+            playerInput.DebugMineMessage(1, true);
             Transform mine = Instantiate(seamine, transform.position - transform.forward * mineOffset, transform.rotation);
             mine.GetComponent<SeamineExpl>().SetAttacker(name);
             lastSeamine = Time.time;
@@ -78,5 +88,15 @@ public class PlayerShooting : MonoBehaviour {
         smoke.Play();
     }
 
+    public void AddShell()
+    {
+        shellCount++;
+        playerInput.DebugAmmoMessage(1, false);
+    }
 
+    public void AddMine()
+    {
+        minesCount++;
+        playerInput.DebugMineMessage(1, false);
+    }
 }

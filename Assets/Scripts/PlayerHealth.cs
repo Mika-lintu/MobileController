@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour {
+public class PlayerHealth : MonoBehaviour
+{
 
     private float deadSeconds = 1f;
     private int maxHealth = 3;
@@ -57,6 +58,7 @@ public class PlayerHealth : MonoBehaviour {
         if (name != playerName)
         {
            manager.AddPoint(playerName);
+
         }       
 
         // disable shooting & movement
@@ -75,6 +77,7 @@ public class PlayerHealth : MonoBehaviour {
         gameObject.GetComponent<BoxCollider>().enabled = true;
 
         input.enabled = true;
+
         input.DebugHealthMessage(maxHealth, false);
     }
 }

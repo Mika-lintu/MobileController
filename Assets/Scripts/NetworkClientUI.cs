@@ -5,7 +5,8 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
 
-public class NetworkClientUI : MonoBehaviour {
+public class NetworkClientUI : MonoBehaviour
+{
 
     public string serverIP;
     public string portNumber;
@@ -55,10 +56,16 @@ public class NetworkClientUI : MonoBehaviour {
     {
         uIController = GetComponent<UIManager>();
         client = new NetworkClient();
-        client.RegisterHandler(999, GetMessageNumber);
-        client.RegisterHandler(987, UpdateController);
+        client.RegisterHandler(999, GetMessageFromServer);
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Keypad0))
+        {
+
+        }
+    }
     void Connect()
     {
         int port;
@@ -89,16 +96,7 @@ public class NetworkClientUI : MonoBehaviour {
 
     static public void SendButtonInfo(string name, int pressed, int buttonID)
     {
-        if (pressed == 1 && buttonID == 3)
-        {
-            uIController.SwapWeapons(buttonID);
-        }
-        if (pressed == 1 && !uIController.cooldownActive && buttonID != 3)
-        {
-            uIController.ActivateCooldown(buttonID);
-        }
-        if (client.isConnected)
-        {
+       
             if (pressed == 1 && buttonID == 3)
             {
                 uIController.SwapWeapons(buttonID);
@@ -111,10 +109,10 @@ public class NetworkClientUI : MonoBehaviour {
             StringMessage msg = new StringMessage();
             msg.value = 2 + "|" + name + "|" + pressed + "|" + buttonID;
             client.Send(messageNumber, msg);
-        }
+        
     }
 
-    public void GetMessageNumber(NetworkMessage message)
+    public void GetMessageFromServer(NetworkMessage message)
     {
         int msgID;
         int msgInfo;
@@ -126,65 +124,56 @@ public class NetworkClientUI : MonoBehaviour {
 
         if (int.TryParse(deltas[0], out msgID)) { }
         if (int.TryParse(deltas[1], out msgInfo)) { }
-            if (msgID == 0)
+        if (msgID == 0)
+        {
+            switch (msgInfo)
             {
-                    switch (msgInfo)
-                    {
-                        case 1:
-                            messageNumber = 111;
-                            client.RegisterHandler(977, UpdateController);
-                            break;
-                        case 2:
-                            messageNumber = 222;
-                            break;
-                        default:
-                            break;
-                    }
+                case 1:
+                    messageNumber = 111;
+                    break;
+                case 2:
+                    messageNumber = 222;
+                    break;
+                case 3:
+                    messageNumber = 333;
+                    break;
+                case 4:
+                    messageNumber = 444;
+                    break;
+                default:
+                    break;
             }
-        else if(msgID == 1)
+        }
+        else if (msgID == 1)
         {
             uIController.RemoveHealth(msgInfo);
         }
-        else if(msgID == 2)
+        else if (msgID == 2)
         {
             uIController.ResetUI(msgInfo);
         }
-    }
-
-    void UpdateController(NetworkMessage message)
-    {
-        StringMessage msg = new StringMessage();
-        msg.value = message.ReadMessage<StringMessage>().value;
-        string[] deltas = msg.value.Split('|');
-
-        int temp;
-        if (int.TryParse(deltas[0], out temp)) { }
-        if(temp == 1)
+        else if (msgID == 3)
         {
-            testObject.SetActive(true);
+            uIController.RemoveAmmo(msgInfo);
+            serverMessage = "Remove ammo";
+        }
+        else if (msgID == 4)
+        {
+            uIController.AddAmmo(msgInfo);
+        }
+        else if (msgID == 5)
+        {
+            uIController.RemoveMine(msgInfo);
+            //serverMessage = "Remove mine";
+        }
+        else if (msgID == 6)
+        {
+            uIController.AddMine(msgInfo);
+        }
+        else if (msgID == 7)
+        {
+            serverMessage = "" + msgInfo;
         }
     }
 
-    void UpdateControllerUI(NetworkMessage message)
-    {
-        int UIType;
-
-        StringMessage msg = new StringMessage();
-        msg.value = message.ReadMessage<StringMessage>().value;
-        string[] deltas = msg.value.Split('|');
-
-        if (int.TryParse(deltas[0], out UIType)) { }
-        if (UIType == 1)
-        {
-            testObject.SetActive(true);
-        }
-        else if (UIType == 2)
-        {
-
-        }
-        else if (UIType == 3)
-        {
-
-        }
-    }
 }
