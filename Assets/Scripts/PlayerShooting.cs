@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour
 {
-
-    public int minesCount = 3;
-    public int shellCount = 3;
-
+  
     public Transform seamine;
     private float mineOffset = 2.9f;
     public Rigidbody shell;
@@ -22,18 +19,19 @@ public class PlayerShooting : MonoBehaviour
 
     PlayerInput playerInput;
 
-
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
     }
+
     // shoots from all cannons
     public void ShortRangeShoot (Transform side)
     {
-        if (Time.time >= lastShotShort + shortCooldown && shellCount > 0)
+        print("Happend");
+        if (Time.time >= lastShotShort + shortCooldown && playerInput.shellCount > 0)
         {
-            shellCount--;
-            playerInput.DebugAmmoMessage(1, true);
+            
+            playerInput.AmmoMessage(1, true, "Shell");
             foreach (Transform child in side.transform)
             {
                 Shoot(child, 0.5f);
@@ -54,12 +52,11 @@ public class PlayerShooting : MonoBehaviour
 
     public void Seamine ()
     {
-        if (Time.time >= lastSeamine + seamineCooldown && minesCount > 0)
+        if (Time.time >= lastSeamine + seamineCooldown && playerInput.mineCount > 0)
         {
-            minesCount--;
-            playerInput.DebugMineMessage(1, true);
+            playerInput.AmmoMessage(1, true, "Mine");
             Transform mine = Instantiate(seamine, transform.position - transform.forward * mineOffset, transform.rotation);
-            mine.GetComponent<SeamineExpl>().SetAttacker(name);
+            mine.GetComponent<SeamineExpl>().SetAttacker(gameObject);
             lastSeamine = Time.time;
         }       
     }
@@ -75,7 +72,7 @@ public class PlayerShooting : MonoBehaviour
         shellInstance.AddForce(cannon.forward * shellVelocity, ForceMode.VelocityChange);
 
         // keep track of the player who's shooting (for points)
-        shellInstance.GetComponent<ShellExpl>().SetShooter(gameObject.name);
+        shellInstance.GetComponent<ShellExpl>().SetShooter(gameObject);
 
         // play effects
         Transform explObject = cannon.GetChild(0);
@@ -88,15 +85,4 @@ public class PlayerShooting : MonoBehaviour
         smoke.Play();
     }
 
-    public void AddShell()
-    {
-        shellCount++;
-        playerInput.DebugAmmoMessage(1, false);
-    }
-
-    public void AddMine()
-    {
-        minesCount++;
-        playerInput.DebugMineMessage(1, false);
-    }
 }

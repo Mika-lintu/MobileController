@@ -5,19 +5,21 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-
     public bool cooldownActive = false;
+
     public Slider longShotCooldown;
     public Slider shortShotCooldown;
     public Slider mineCooldown;
     public Slider health;
 
     public Text weaponText;
-    public Text ammoAmountText;
-    public Text mineAmountText;
+    public Text ammoText;
+    public Text mineText;
+    public Text pointsText;
 
     int ammoAmount = 3;
     int mineAmount = 3;
+    int pointsAmount = 0;
 
     enum cooldownSliderType { LongShot, ShortShot, Mine}
     cooldownSliderType  currentCooldown;
@@ -26,8 +28,9 @@ public class UIManager : MonoBehaviour
     {
         currentCooldown = cooldownSliderType.ShortShot;
         weaponText.text = "Active Weapon: Short range";
-        ammoAmountText.text = "Ammo: " + ammoAmount;
-        mineAmountText.text = "Mines: " + mineAmount;
+        ammoText.text = "Ammo: " + ammoAmount;
+        mineText.text = "Mines: " + mineAmount;
+        pointsText.text = "Points: " + pointsAmount;
     }
 	
 	
@@ -115,38 +118,42 @@ public class UIManager : MonoBehaviour
         cooldownActive = false;
     }
 
+    public void ResetUI(int dmg)
+    {
+        ammoAmount = 3;
+        mineAmount = 3;
+        health.value = health.maxValue;
+        ammoText.text = "Ammo: " + ammoAmount;
+        mineText.text = "Mines: " + mineAmount;
+    }
+
     public void RemoveHealth(int dmg)
     {
         health.value -= dmg;
     }
 
-    public void ResetUI(int dmg)
-    {
-        health.value = health.maxValue;
-    }
-
     public void RemoveAmmo(int amount)
     {
         ammoAmount -= amount;
-        ammoAmountText.text = "Ammo: " + ammoAmount;
+        ammoText.text = "Ammo: " + ammoAmount;
     }
 
     public void AddAmmo(int amount)
     {
         ammoAmount += amount;
-        ammoAmountText.text = "Ammo: " + ammoAmount ;
+        ammoText.text = "Ammo: " + ammoAmount ;
     }
 
     public void RemoveMine(int amount)
     {
         mineAmount -= amount;
-        mineAmountText.text = "Mines: " + mineAmount;
+        mineText.text = "Mines: " + mineAmount;
     }
 
     public void AddMine(int amount)
     {
         mineAmount += amount;
-        mineAmountText.text = "Mines: " + mineAmount;
+        mineText.text = "Mines: " + mineAmount;
     }
     
 }

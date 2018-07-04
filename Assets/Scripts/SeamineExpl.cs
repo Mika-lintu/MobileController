@@ -5,18 +5,19 @@ using UnityEngine;
 public class SeamineExpl : MonoBehaviour {
 
     private string fromWhichPlayer;
+    GameObject attackingPlayer;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerHealth>() != null)
         {
-            other.GetComponent<PlayerHealth>().TakeDamage(fromWhichPlayer, 2);
+            other.GetComponent<PlayerHealth>().TakeDamage( attackingPlayer, 2);
         }
         Destroy(gameObject);
     }
 
-    public void SetAttacker(string playerName)
+    public void SetAttacker(GameObject attacker)
     {
-        fromWhichPlayer = playerName;
+        attackingPlayer = attacker;
     }
 }

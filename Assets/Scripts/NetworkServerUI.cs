@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
-using UnityEngine.Networking.PlayerConnection;
 using UnityStandardAssets.CrossPlatformInput;
 
 
@@ -23,10 +22,12 @@ public class NetworkServerUI : MonoBehaviour
 
     //PlayerInput player;
 
-    public PlayerInput player1;
-    public PlayerInput player2;
-    public PlayerInput player3;
-    public PlayerInput player4;
+    public GameObject player1;
+    public GameObject player2;
+    public GameObject player3;
+    public GameObject player4;
+
+    //PlayerStats player1;
 
     int playercount = 1;
 
@@ -71,7 +72,6 @@ public class NetworkServerUI : MonoBehaviour
         //virtualVAxisP3 = new CrossPlatformInputManager.VirtualAxis("Vertical_P3");
         //CrossPlatformInputManager.RegisterVirtualAxis(virtualVAxisP3);
         */
-
         NetworkServer.Listen(2310);
         NetworkServer.RegisterHandler(111, PlayerOne);
         NetworkServer.RegisterHandler(222, PlayerTwo);
@@ -100,8 +100,8 @@ public class NetworkServerUI : MonoBehaviour
         {
                 // virtualHAxisP1.Update(Convert.ToSingle(deltas[1]));
                 // virtualVAxisP1.Update(Convert.ToSingle(deltas[2]));
-                player1.axisH = (Convert.ToSingle(deltas[1]));
-                player1.axisV = (Convert.ToSingle(deltas[2]));
+                player1.GetComponent<PlayerInput>().axisH = (Convert.ToSingle(deltas[1]));
+                player1.GetComponent<PlayerStats>().axisV = (Convert.ToSingle(deltas[2]));
         }
         else if (messageID == 2)
         {
@@ -123,13 +123,13 @@ public class NetworkServerUI : MonoBehaviour
             switch (buttonID)
             {
                 case 1:
-                    player1.Button1(isPressed);
+                    player1.GetComponent<PlayerInput>().ShootLeft(isPressed);
                     break;
                 case 2:
-                    player1.Button2(isPressed);
+                    player1.GetComponent<PlayerInput>().ShootRight(isPressed);
                     break;
                 case 3:
-                    player1.Button3(isPressed);
+                    player1.GetComponent<PlayerInput>().SwapWeapons(isPressed);
                     break;
 
                 default:
@@ -155,13 +155,13 @@ public class NetworkServerUI : MonoBehaviour
             {
                 //virtualHAxisP2.Update(Convert.ToSingle(deltas[1]));
                 //virtualVAxisP2.Update(Convert.ToSingle(deltas[2]));
-                player2.axisH = (Convert.ToSingle(deltas[1]));
-                player2.axisV = (Convert.ToSingle(deltas[2]));
+                player2.GetComponent<PlayerStats>().axisH = (Convert.ToSingle(deltas[1]));
+                player2.GetComponent<PlayerStats>().axisV = (Convert.ToSingle(deltas[2]));
             }
             else if (messageID == 2)
             {
-                
-                int temp; 
+
+                int temp;
                 if (int.TryParse(deltas[2], out temp))
                     if (temp == 1)
                     {
@@ -174,23 +174,23 @@ public class NetworkServerUI : MonoBehaviour
 
                 if (int.TryParse(deltas[3], out buttonID))
 
-                switch (buttonID)
-                {
-                    case 1:
-                            player2.Button1(isPressed);
-                        break;
-                    case 2:
-                            player2.Button2(isPressed);
-                        break;
-                    case 3:
-                            player2.Button3(isPressed);
-                        break;
-                    default:
-                        break;
-                }
+                    switch (buttonID)
+                    {
+                        case 1:
+                            player2.GetComponent<PlayerInput>().ShootLeft(isPressed);
+                            break;
+                        case 2:
+                            player2.GetComponent<PlayerInput>().ShootRight(isPressed);
+                            break;
+                        case 3:
+                            player2.GetComponent<PlayerInput>().SwapWeapons(isPressed);
+                            break;
+                        default:
+                            break;
+                    }
             }
     }
-    
+
     private void PlayerThree(NetworkMessage message)
     {
         int messageID;
@@ -208,8 +208,8 @@ public class NetworkServerUI : MonoBehaviour
             {
                 //virtualHAxisP2.Update(Convert.ToSingle(deltas[1]));
                 //virtualVAxisP2.Update(Convert.ToSingle(deltas[2]));
-                player3.axisH = (Convert.ToSingle(deltas[1]));
-                player3.axisV = (Convert.ToSingle(deltas[2]));
+                player3.GetComponent<PlayerStats>().axisH = (Convert.ToSingle(deltas[1]));
+                player3.GetComponent<PlayerStats>().axisV = (Convert.ToSingle(deltas[2]));
             }
             else if (messageID == 2)
             {
@@ -230,20 +230,20 @@ public class NetworkServerUI : MonoBehaviour
                     switch (buttonID)
                     {
                         case 1:
-                            player3.Button1(isPressed);
+                            player3.GetComponent<PlayerInput>().ShootLeft(isPressed);
                             break;
                         case 2:
-                            player3.Button2(isPressed);
+                            player3.GetComponent<PlayerInput>().ShootRight(isPressed);
                             break;
                         case 3:
-                            player3.Button3(isPressed);
+                            player3.GetComponent<PlayerInput>().SwapWeapons(isPressed);
                             break;
                         default:
                             break;
                     }
             }
     }
-    
+
     private void PlayerFour(NetworkMessage message)
     {
         int messageID;
@@ -261,8 +261,8 @@ public class NetworkServerUI : MonoBehaviour
             {
                 //virtualHAxisP2.Update(Convert.ToSingle(deltas[1]));
                 //virtualVAxisP2.Update(Convert.ToSingle(deltas[2]));
-                player4.axisH = (Convert.ToSingle(deltas[1]));
-                player4.axisV = (Convert.ToSingle(deltas[2]));
+                player4.GetComponent<PlayerInput>().axisH = (Convert.ToSingle(deltas[1]));
+                player4.GetComponent<PlayerInput>().axisV = (Convert.ToSingle(deltas[2]));
             }
             else if (messageID == 2)
             {
@@ -283,13 +283,13 @@ public class NetworkServerUI : MonoBehaviour
                     switch (buttonID)
                     {
                         case 1:
-                            player4.Button1(isPressed);
+                            player4.GetComponent<PlayerInput>().ShootLeft(isPressed);
                             break;
                         case 2:
-                            player4.Button2(isPressed);
+                            player4.GetComponent<PlayerInput>().ShootRight(isPressed);
                             break;
                         case 3:
-                            player4.Button3(isPressed);
+                            player4.GetComponent<PlayerInput>().SwapWeapons(isPressed);
                             break;
                         default:
                             break;
@@ -298,6 +298,7 @@ public class NetworkServerUI : MonoBehaviour
     }
 
     // SET CLIENT MESSAGE NUMBER
+
     private void NewPlayer(NetworkMessage message)
     {
         print("I happen");
@@ -309,19 +310,19 @@ public class NetworkServerUI : MonoBehaviour
                 break;
             case 1:
                 SendMessage(1,0,1);
-                player1.playerID = 1;
-                break; 
+                player1.GetComponent<PlayerInput>().playerID = 1;
+                break;
             case 2:
                 SendMessage(2,0,2);
-                player2.playerID = 2;
+                player2.GetComponent<PlayerInput>().playerID = 2;
                 break;
             case 3:
                 SendMessage(3,0,3);
-                player3.playerID = 3;
+                player3.GetComponent<PlayerInput>().playerID = 3;
                 break;
             case 4:
                 SendMessage(4,0,4);
-                player3.playerID = 4;
+                player3.GetComponent<PlayerInput>().playerID = 4;
                 break;
 
             default:
@@ -337,6 +338,7 @@ public class NetworkServerUI : MonoBehaviour
     {
         StringMessage msg = new StringMessage();
         msg.value = msgID + "|" + msgInfo;
+        print(msgID + " " + msgInfo);
         NetworkServer.SendToClient(NetworkServer.connections[playerID].connectionId, 999, msg);
     }
 

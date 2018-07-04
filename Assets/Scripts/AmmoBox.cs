@@ -30,11 +30,11 @@ public class AmmoBox : MonoBehaviour {
         {
             if (which == "mine")
             {
-                other.GetComponent<PlayerShooting>().minesCount++;
+                other.GetComponent<PlayerInput>().AmmoMessage(1, false, "Mine");
             }
             else
             {
-                other.GetComponent<PlayerShooting>().shellCount++;
+                other.GetComponent<PlayerInput>().AmmoMessage(1, false, "Shell");
             }            
             Destroy(gameObject);
         }

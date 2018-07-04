@@ -30,10 +30,11 @@ public class PlayerHealth : MonoBehaviour
     }
 
     // decrease health and change sprite based on health (name: attacker)
-    public void TakeDamage (string name, int damage)
+    public void TakeDamage (GameObject attackingPlayer, int damage)
     {
         health -= damage;
-        input.DebugHealthMessage(damage, true);
+        input.HealthMessage(damage, true);
+        //input.DebugHealthMessage(damage, true);
 
         if (health == 2)
         {
@@ -45,20 +46,19 @@ public class PlayerHealth : MonoBehaviour
         }
         else if (health <= 0)
         {
-            StartCoroutine(PlayerDeath(name));
+            StartCoroutine(PlayerDeath(attackingPlayer));
         }
     }
 
-    private IEnumerator PlayerDeath(string playerName)
+    private IEnumerator PlayerDeath(GameObject shooterPlayer)
     {
         spriteRenderer.sprite = noHP;
         gameObject.GetComponent<BoxCollider>().enabled = false;
-
+        int shooterID = shooterPlayer.GetComponent<PlayerInput>().playerID;
         // add a point to the player who destroyed ship
-        if (name != playerName)
+        if (input.playerID != shooterID)
         {
-           manager.AddPoint(playerName);
-
+           manager.AddPoint(shooterPlayer);
         }       
 
         // disable shooting & movement
@@ -75,9 +75,10 @@ public class PlayerHealth : MonoBehaviour
 
         health = maxHealth;
         gameObject.GetComponent<BoxCollider>().enabled = true;
-
+        input.HealthMessage(3, false);
         input.enabled = true;
 
-        input.DebugHealthMessage(maxHealth, false);
+        
+        //input.DebugHealthMessage(maxHealth, false);
     }
 }

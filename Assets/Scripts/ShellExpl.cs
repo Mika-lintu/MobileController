@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShellExpl : MonoBehaviour {
+public class ShellExpl : MonoBehaviour
+{
 
     public float maxLifetime;
     private string fromWhichPlayer;
+    GameObject attackingPlayer;
 
-	void Start () {
+	void Start ()
+    {
         Destroy(gameObject, maxLifetime);
 	}
 
@@ -15,14 +18,14 @@ public class ShellExpl : MonoBehaviour {
     {
         if (other.GetComponent<PlayerHealth>() != null)
         {
-            other.GetComponent<PlayerHealth>().TakeDamage(fromWhichPlayer, 1);
+            other.GetComponent<PlayerHealth>().TakeDamage(attackingPlayer, 1);
             Destroy(gameObject);
         }
     }
 
-    public void SetShooter (string name)
+    public void SetShooter (GameObject shooter)
     {
-        fromWhichPlayer = name;
+        attackingPlayer = shooter;
     }
 
     public void SetMaxLifetime (float sec)

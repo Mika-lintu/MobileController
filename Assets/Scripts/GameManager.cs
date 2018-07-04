@@ -23,7 +23,11 @@ public class GameManager : MonoBehaviour
     public Transform ammoBox;
     public Transform[] ammoSpawnPoints;
 
-    void Start () {
+    public GameObject[] players;
+
+    void Start ()
+    {
+        
         //StartCoroutine(GameLoop());
     }
 
@@ -39,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        
         StartCoroutine(GameLoop());
     }
 
@@ -51,9 +56,12 @@ public class GameManager : MonoBehaviour
     }
 
     // adds a point to player and checks for max point
-	public void AddPoint (string playerName)
+	public void AddPoint (GameObject player)
     {
-        playersPoints[playerName]++;
+        playersPoints[player.name]++;
+
+        player.GetComponent<PlayerInput>().AddPointMessage(1);
+
         foreach (int i in playersPoints.Values)
         {
             if (i > maxPoint)

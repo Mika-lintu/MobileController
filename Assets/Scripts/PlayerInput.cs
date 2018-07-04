@@ -3,32 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class PlayerInput: MonoBehaviour
+public class PlayerInput: PlayerStats
 {
 
-    public int playerID;
+    //public int playerID;
     
 
-    public float speed = 10.0f;
-    public float rotationSpeed = 100.0f;
-
-    public string axisNameV;
-    public string axisNameH;
-
-    public float axisH;
-    public float axisV;
+    //public float speed = 10.0f;
+    //public float rotationSpeed = 100.0f;
+    
+    //public float axisH;
+    //public float axisV;
     
     public Transform fireRight;
     public Transform fireLeft;
-    public NetworkServerUI server;
     private string shootMode = "short";
 
-    GameManager manager;
-
-    private void Start()
-    {
-        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
-    }
 
     void Update ()
     {
@@ -43,30 +33,10 @@ public class PlayerInput: MonoBehaviour
 
         gameObject.GetComponent<Rigidbody>().velocity = transform.forward * speed;
         transform.Rotate(0, rotation, 0);
-
-
-// TEST
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Button1(true);
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Button2(true);
-        }
-
-        // switch shooting mode with S
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Button3(true);
-        }
-       
-//
     }
 
     // shoot left
-    public void Button1(bool pressed)
+    public void ShootLeft(bool pressed)
     {
         if (pressed)
         {
@@ -74,17 +44,17 @@ public class PlayerInput: MonoBehaviour
 
             if (shootMode == "short")
             {
-                gameObject.GetComponent<PlayerShooting>().ShortRangeShoot(fireLeft);
+               GetComponent<PlayerShooting>().ShortRangeShoot(fireLeft);
             }
 
             else if (shootMode == "long")
             {
-                gameObject.GetComponent<PlayerShooting>().LongRangeShoot(fireLeft);
+                GetComponent<PlayerShooting>().LongRangeShoot(fireLeft);
             }
             
             else if (shootMode == "seamine")
             {
-                gameObject.GetComponent<PlayerShooting>().Seamine();
+                GetComponent<PlayerShooting>().Seamine();
             }
         }
         else
@@ -94,25 +64,27 @@ public class PlayerInput: MonoBehaviour
     }
 
     // shoot right
-    public void Button2(bool pressed)
+    public void ShootRight(bool pressed)
     {
+       
         if (pressed)
         {
             print("Button 2 was pressed");
 
             if (shootMode == "short")
             {
-                gameObject.GetComponent<PlayerShooting>().ShortRangeShoot(fireRight);
+                
+                GetComponent<PlayerShooting>().ShortRangeShoot(fireRight);
             }
             
             else if (shootMode == "long")
             {
-                gameObject.GetComponent<PlayerShooting>().LongRangeShoot(fireRight);
+                GetComponent<PlayerShooting>().LongRangeShoot(fireRight);
             }
 
             else if (shootMode == "seamine")
             {
-                gameObject.GetComponent<PlayerShooting>().Seamine();
+                GetComponent<PlayerShooting>().Seamine();
             }
         }
         else
@@ -122,7 +94,7 @@ public class PlayerInput: MonoBehaviour
     }
 
     // swap weapons
-    public void Button3(bool pressed)
+    public void SwapWeapons(bool pressed)
     {
         if (pressed)
         {
@@ -159,44 +131,4 @@ public class PlayerInput: MonoBehaviour
         }
     }
 
-    public void DebugHealthMessage(int dmg, bool remove)
-    {
-        if (remove)
-        {
-            server.SendMessage(playerID, 1, dmg);
-        }
-        else if (!remove)
-        {
-            server.SendMessage(playerID, 2, dmg);
-        }
-    }
-
-    public void DebugAmmoMessage(int amount, bool remove)
-    {
-        if (remove)
-        {
-            server.SendMessage(playerID, 3, amount);
-        }
-        else if (!remove)
-        {
-            server.SendMessage(playerID, 4, amount);
-        }
-    }
-
-    public void DebugMineMessage(int amount, bool remove)
-    {
-        if (remove)
-        {
-            server.SendMessage(playerID, 5, amount);
-        }
-        else if (!remove)
-        {
-            server.SendMessage(playerID, 6, amount);
-        }
-    }
-
-    public void DebugTesti(int amount)
-    {
-        server.SendMessage(playerID, 7, amount);
-    }
 }

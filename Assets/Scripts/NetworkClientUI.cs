@@ -20,7 +20,6 @@ public class NetworkClientUI : MonoBehaviour
     static short messageNumber = 999;
     
     static bool playerID = false;
-    public GameObject testObject;
 
     private void OnGUI()
     {
@@ -120,7 +119,7 @@ public class NetworkClientUI : MonoBehaviour
         StringMessage msg = new StringMessage();
         msg.value = message.ReadMessage<StringMessage>().value;
         string[] deltas = msg.value.Split('|');
-        serverMessage = deltas[0];
+        //serverMessage = deltas[0];
 
         if (int.TryParse(deltas[0], out msgID)) { }
         if (int.TryParse(deltas[1], out msgInfo)) { }
@@ -146,11 +145,11 @@ public class NetworkClientUI : MonoBehaviour
         }
         else if (msgID == 1)
         {
-            uIController.RemoveHealth(msgInfo);
+            uIController.ResetUI(msgInfo);
         }
         else if (msgID == 2)
         {
-            uIController.ResetUI(msgInfo);
+            uIController.RemoveHealth(msgInfo);
         }
         else if (msgID == 3)
         {
