@@ -53,7 +53,7 @@ public class PlayerHealth : MonoBehaviour
     private IEnumerator PlayerDeath(GameObject shooterPlayer)
     {
         spriteRenderer.sprite = noHP;
-        gameObject.GetComponent<BoxCollider>().enabled = false;
+        gameObject.GetComponent<CapsuleCollider>().enabled = false;
         int shooterID = shooterPlayer.GetComponent<PlayerInput>().playerID;
         // add a point to the player who destroyed ship
         if (input.playerID != shooterID)
@@ -74,7 +74,7 @@ public class PlayerHealth : MonoBehaviour
         gameObject.SetActive(true);
 
         health = maxHealth;
-        gameObject.GetComponent<BoxCollider>().enabled = true;
+        gameObject.GetComponent<CapsuleCollider>().enabled = true;
         input.HealthMessage(3, false);
         input.enabled = true;
 
