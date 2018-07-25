@@ -17,9 +17,15 @@ public class UIManager : MonoBehaviour
     public Text mineText;
     public Text pointsText;
 
+    public float shortShotTimer = 3f;
+    public float longShotTimer = 1f;
+    public float seaMineTimer = 3f;
+
     int ammoAmount = 3;
     int mineAmount = 3;
     int pointsAmount = 0;
+
+
 
     enum cooldownSliderType { LongShot, ShortShot, Mine}
     cooldownSliderType  currentCooldown;
@@ -49,17 +55,17 @@ public class UIManager : MonoBehaviour
                 if (currentCooldown == cooldownSliderType.ShortShot)
                 {
                     shortShotCooldown.value = 0;
-                    StartCoroutine(Cooldown(3f, shortShotCooldown));
+                    StartCoroutine(Cooldown(shortShotTimer, shortShotCooldown));
                 }
                 else if (currentCooldown == cooldownSliderType.LongShot)
                 {
                     longShotCooldown.value = 0;
-                    StartCoroutine(Cooldown(3f, longShotCooldown));
+                    StartCoroutine(Cooldown(longShotTimer, longShotCooldown));
                 }
                 else if (currentCooldown == cooldownSliderType.Mine)
                 {
                     mineCooldown.value = 0;
-                    StartCoroutine(Cooldown(3f, mineCooldown));
+                    StartCoroutine(Cooldown(seaMineTimer, mineCooldown));
                 }
             }
         }

@@ -20,6 +20,7 @@ public class NetworkClientUI : MonoBehaviour
     static short messageNumber = 999;
     
     static bool playerID = false;
+    static int clientID;
 
     private void OnGUI()
     {
@@ -28,7 +29,7 @@ public class NetworkClientUI : MonoBehaviour
         GUI.Label(new Rect(20, Screen.height - 30, 100, 20), "Status: " + client.isConnected);
 
         GUI.Box(new Rect(150, Screen.height - 50, 100, 50), "Server message");
-        GUI.Label(new Rect(150, Screen.height - 30, 300, 20), serverMessage);
+        GUI.Label(new Rect(150, Screen.height - 30, 300, 20), serverMessage );
         
         if (!client.isConnected)
         {
@@ -39,16 +40,7 @@ public class NetworkClientUI : MonoBehaviour
                 Connect();                
             }
         }
-        else if (client.isConnected)
-        {
-            if (!playerID)
-            {
-                if (GUI.Button(new Rect(10, 10, 60, 50), "Start"))
-                {
-                    FirstMessage();
-                }
-            }
-        }
+         
     }
 
     void Start ()
@@ -65,6 +57,7 @@ public class NetworkClientUI : MonoBehaviour
 
         }
     }
+
     void Connect()
     {
         int port;
@@ -72,14 +65,17 @@ public class NetworkClientUI : MonoBehaviour
         client.Connect(serverIP, port);
     }
 
-    static public void FirstMessage()
+    public void FirstMessage(string number)
     {
         if (client.isConnected)
         {
-            StringMessage msg = new StringMessage();
-            msg.value = ipaddress;
-            client.Send(999, msg);
-            playerID = true;
+
+            if (int.TryParse(number, out clientID)) { }
+            serverMessage = clientID+"";
+            //StringMessage msg = new StringMessage();
+            //msg.value = ipaddress;
+            //client.Send(999, msg);
+            //playerID = true;
         }
     }
 
@@ -88,12 +84,12 @@ public class NetworkClientUI : MonoBehaviour
         if (client.isConnected)
         {
             StringMessage msg = new StringMessage();
-            msg.value = 1 + "|" + hDelta + "|" + vDelta;
+            msg.value = 1 + "|" + clientID + "|" + hDelta + "|" + vDelta;
             client.Send(messageNumber, msg);
         }
     }
 
-    static public void SendButtonInfo(string name, int pressed, int buttonID)
+    static public void SendButtonInfo(int pressed, int buttonID)
     {
        
             if (pressed == 1 && buttonID == 3)
@@ -106,7 +102,7 @@ public class NetworkClientUI : MonoBehaviour
             }
             
             StringMessage msg = new StringMessage();
-            msg.value = 2 + "|" + name + "|" + pressed + "|" + buttonID;
+            msg.value = 2 + "|" + clientID + "|" + pressed + "|" + buttonID;
             client.Send(messageNumber, msg);
         
     }
@@ -125,23 +121,7 @@ public class NetworkClientUI : MonoBehaviour
         if (int.TryParse(deltas[1], out msgInfo)) { }
         if (msgID == 0)
         {
-            switch (msgInfo)
-            {
-                case 1:
-                    messageNumber = 111;
-                    break;
-                case 2:
-                    messageNumber = 222;
-                    break;
-                case 3:
-                    messageNumber = 333;
-                    break;
-                case 4:
-                    messageNumber = 444;
-                    break;
-                default:
-                    break;
-            }
+            FirstMessage(deltas[1]);
         }
         else if (msgID == 1)
         {
