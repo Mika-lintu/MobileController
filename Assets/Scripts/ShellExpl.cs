@@ -16,12 +16,18 @@ public class ShellExpl : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerHealth>() != null)
+
+        if (other.GetComponent<BoxCollider>().tag == "Walls" )
+        {
+            Destroy(gameObject);
+        }
+        else if (other.GetComponent<PlayerHealth>() != null)
         {
             other.GetComponent<PlayerHealth>().TakeDamage(attackingPlayer, 1);
             Destroy(gameObject);
         }
     }
+   
 
     public void SetShooter (GameObject shooter)
     {

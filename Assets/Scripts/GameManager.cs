@@ -30,9 +30,13 @@ public class GameManager : MonoBehaviour
         
         //StartCoroutine(GameLoop());
     }
-
-    //----------------------------------------------------------
-    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EndGame();
+        }
+    }
 
     public void StartGame()
     {
@@ -141,4 +145,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(waitOnEnd);
         SceneManager.LoadScene("Menu");
     }
+
+    void EndGame()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
 }
